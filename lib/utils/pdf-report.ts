@@ -75,6 +75,9 @@ export function generateAnalysisReport(
   analysis: Analysis,
   result: AnalysisResult | null
 ): void {
+  const baseFileName = analysis.file_name.replace(/\.[^/.]+$/, "");
+  const exportFileName = `riskread_${baseFileName}_analysis.pdf`;
+
   const doc = new jsPDF("p", "mm", "a4");
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
@@ -323,7 +326,7 @@ export function generateAnalysisReport(
     addFooter();
 
     // Trigger download
-    doc.save(`${analysis.file_name.replace(/\.[^/.]+$/, "")}-risk-report.pdf`);
+    doc.save(exportFileName);
     return;
   }
 
@@ -697,5 +700,5 @@ export function generateAnalysisReport(
   // =====================================================
   // SAVE
   // =====================================================
-  doc.save(`${analysis.file_name.replace(/\.[^/.]+$/, "")}-risk-report.pdf`);
+  doc.save(exportFileName);
 }

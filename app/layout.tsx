@@ -20,6 +20,7 @@ export const metadata: Metadata = {
   },
   description:
     "RiskRead AI is an intelligent document analysis platform that uses advanced AI to identify, assess, and mitigate risks in your documents. Get instant risk insights, compliance checks, and actionable recommendations.",
+  applicationName: "RiskRead AI",
   keywords: [
     "document risk analysis",
     "AI risk assessment",
@@ -49,6 +50,16 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/",
   },
+  manifest: "/manifest.json",
+  icons: {
+    icon: [
+      { url: "/logo.svg", type: "image/svg+xml" },
+      { url: "/logo.png", type: "image/png" },
+    ],
+    shortcut: ["/favicon.ico"],
+    apple: [{ url: "/logo.png", type: "image/png" }],
+  },
+  themeColor: "#00AB8D",
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -187,11 +198,7 @@ export default function RootLayout({
         />
         {/* Additional SEO Meta Tags */}
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="theme-color" content="#00AB8D" />
         <meta name="msapplication-TileColor" content="#00AB8D" />
-        <link rel="icon" href="/favicon.ico" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        <link rel="manifest" href="/manifest.json" />
       </head>
       <body className={`${dmSans.className} antialiased`}>
         <ErrorBoundary>

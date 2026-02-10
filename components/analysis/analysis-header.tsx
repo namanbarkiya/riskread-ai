@@ -3,11 +3,9 @@
 import { useState } from "react";
 import {
   AlertTriangle,
-  Calendar,
   CheckCircle,
   Clock,
   Download,
-  FileText,
   RefreshCw,
   Share2,
 } from "lucide-react";
@@ -71,14 +69,6 @@ export const AnalysisHeader = ({
     }
   };
 
-  const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return "0 Bytes";
-    const k = 1024;
-    const sizes = ["Bytes", "KB", "MB", "GB"];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
-  };
-
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
@@ -107,59 +97,39 @@ export const AnalysisHeader = ({
 
   return (
     <Card className="w-full">
-      <CardHeader>
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <div className="flex items-center gap-3 mb-2">
-              <FileText className="h-5 w-5 text-muted-foreground" />
-              <CardTitle className="text-xl">{analysis.file_name}</CardTitle>
-            </div>
+      {/* <CardHeader className="flex justify-end">
+        <div className="flex items-center gap-2">
+          {onDownload && (
+            <Button variant="outline" size="sm" onClick={onDownload}>
+              <Download className="h-4 w-4 mr-1" />
+              Download PDF
+            </Button>
+          )}
 
-            <div className="flex items-center gap-4 text-sm text-muted-foreground">
-              <div className="flex items-center gap-1">
-                <Calendar className="h-4 w-4" />
-                <span>{formatDate(analysis.created_at)}</span>
-              </div>
-              <span>•</span>
-              <span>{formatFileSize(analysis.file_size)}</span>
-              <span>•</span>
-              <span className="uppercase">{analysis.file_type}</span>
-            </div>
-          </div>
+          {onShare && (
+            <Button variant="outline" size="sm" onClick={onShare}>
+              <Share2 className="h-4 w-4 mr-1" />
+              Share
+            </Button>
+          )}
 
-          <div className="flex items-center gap-2">
-            {onDownload && (
-              <Button variant="outline" size="sm" onClick={onDownload}>
-                <Download className="h-4 w-4 mr-1" />
-                Download PDF
-              </Button>
-            )}
-
-            {onShare && (
-              <Button variant="outline" size="sm" onClick={onShare}>
-                <Share2 className="h-4 w-4 mr-1" />
-                Share
-              </Button>
-            )}
-
-            {onReanalyze && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleReanalyze}
-                disabled={isReanalyzing || analysis.status === "processing"}
-              >
-                <RefreshCw
-                  className={`h-4 w-4 mr-1 ${isReanalyzing ? "animate-spin" : ""}`}
-                />
-                {isReanalyzing ? "Reanalyzing..." : "Reanalyze"}
-              </Button>
-            )}
-          </div>
+          {onReanalyze && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleReanalyze}
+              disabled={isReanalyzing || analysis.status === "processing"}
+            >
+              <RefreshCw
+                className={`h-4 w-4 mr-1 ${isReanalyzing ? "animate-spin" : ""}`}
+              />
+              {isReanalyzing ? "Reanalyzing..." : "Reanalyze"}
+            </Button>
+          )}
         </div>
-      </CardHeader>
+      </CardHeader> */}
 
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-4 pt-4">
         {/* Status and Score Row */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
