@@ -9,6 +9,7 @@ import {
   FileSearch,
   FileText,
   GaugeCircle,
+  Github,
   Moon,
   ShieldCheck,
   Sparkles,
@@ -155,9 +156,20 @@ export default function HomePage() {
       <div className="relative z-10 flex min-h-screen flex-col">
         <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 pt-6 md:px-8 md:pt-8">
           <Logo size="lg" className="shrink-0" />
-          <div className="hidden items-center gap-2 rounded-full border border-white/50 bg-white/65 px-3 py-1 text-xs text-muted-foreground shadow-sm backdrop-blur dark:border-white/10 dark:bg-neutral-900/60 md:flex">
-            <Sparkles className="h-3.5 w-3.5 text-emerald-500" />
-            AI-first legal & risk review
+          <div className="flex items-center gap-3">
+            <div className="hidden items-center gap-2 rounded-full border border-white/50 bg-white/65 px-3 py-1 text-xs text-muted-foreground shadow-sm backdrop-blur dark:border-white/10 dark:bg-neutral-900/60 md:flex">
+              <Sparkles className="h-3.5 w-3.5 text-emerald-500" />
+              AI-first legal & risk review
+            </div>
+            <a
+              href="https://github.com/namanbarkiya/readrisk-ai"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="View RiskRead AI on GitHub"
+              className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/60 bg-white/75 text-neutral-700 shadow-sm transition hover:bg-white dark:border-white/10 dark:bg-neutral-900/70 dark:text-neutral-100"
+            >
+              <Github className="h-4 w-4" />
+            </a>
           </div>
         </header>
 
