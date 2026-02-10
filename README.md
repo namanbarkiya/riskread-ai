@@ -1,200 +1,152 @@
-# RiskRead AI - Project Documentation
+# RiskRead AI
 
 ## 📋 Project Overview
 
-**RiskRead AI** is an AI-powered document analysis platform for instant risk scoring and insights.
+**RiskRead AI** is a minimal, production-focused AI tool that lets you:
 
-**Tech Stack:** Next.js 15 + TypeScript + Supabase + Gemini AI + Tailwind CSS
+- Upload a contract or PDF from a single landing page
+- Run an AI-powered risk analysis using **Google Gemini**
+- View a rich, single-report analysis page (scores, insights, recommendations)
+- Download a **full PDF report** of the analysis
+
+There is **no authentication** and **no external database** – it is designed to be quick to try and easy to host.
+
+**Current stack**
+
+- **Framework**: Next.js 15 (App Router) + TypeScript
+- **UI**: Tailwind CSS v4, shadcn/ui components, custom dark dashboard
+- **State & Data**: TanStack Query (React Query)
+- **AI**: Google Gemini (via `lib/services/gemini-client.ts`)
+- **PDF reports**: jsPDF (`lib/utils/pdf-report.ts`)
+- **Storage**:
+  - Uploaded files saved temporarily to `public/uploads/`
+  - Analysis metadata + results kept in an **in‑memory store** (`lib/store/analysis-store.ts`)
+  - Latest completed analysis cached in **browser localStorage**
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 
-- Node.js 18+
-- Supabase account
-- Gemini AI API key
+- Node.js **18+**
+- A **Gemini API key**
 
-### Setup Instructions
+### 1. Install dependencies
 
-1. **Clone and Install**
-
-   ```bash
-   git clone <repository>
-   cd readrisk-ai
-   npm install
-   ```
-
-2. **Environment Variables**
-
-   ```bash
-   cp env-example.env .env.local
-   ```
-
-   Add your Supabase and Gemini AI credentials.
-
-3. **Database Setup**
-   - Go to Supabase Dashboard → SQL Editor
-   - Run the contents of `scripts/setup-database.sql`
-
-4. **Start Development**
-   ```bash
-   npm run dev
-   ```
-
-## 📁 Project Structure
-
+```bash
+git clone git@github.com:namanbarkiya/readrisk-ai.git
+cd readrisk-ai
+npm install
 ```
+
+### 2. Configure environment
+
+Copy the example env file and set at least your Gemini key:
+
+```bash
+cp env-example.env .env.local
+```
+
+Required for local use:
+
+- `GEMINI_API_KEY` – your Google Gemini API key
+
+Supabase-related variables in `env-example.env` are **legacy** and can be left empty; Supabase is no longer used.
+
+### 3. Run the dev server
+
+```bash
+npm run dev
+```
+
+Visit `http://localhost:3000`.
+
+## 📁 Main Project Structure (current product)
+
+```text
 readrisk-ai/
-├── app/                    # Next.js app directory
-│   ├── api/               # API routes
-│   ├── dashboard/         # Dashboard pages
-│   └── ...
-├── components/            # React components
-│   ├── analysis/          # Analysis components
-│   ├── dashboard/         # Dashboard components
-│   ├── ui/               # UI components
-│   └── ...
-├── lib/                  # Utilities and services
-│   ├── services/         # Business logic
-│   ├── supabase/         # Database client
-│   ├── utils/            # Helper functions
-│   └── ...
-├── scripts/              # Database setup scripts
-└── project-details/      # Documentation
+├── app/
+│   ├── page.tsx                 # Landing page with upload & recent analysis
+│   ├── analysis/[id]/page.tsx   # Single analysis report page
+│   └── api/
+│       ├── upload/route.ts      # Handles file uploads to /public/uploads
+│       ├── analysis/route.ts    # Create/list analyses (in-memory)
+│       └── analysis/[id]/*      # Status & results endpoints
+├── components/
+│   ├── analysis/                # File upload, progress, results UI
+│   └── ui/                      # Shared UI (buttons, cards, logo, magicui)
+├── lib/
+│   ├── services/
+│   │   └── analysis-service.ts  # Orchestrates extraction, Gemini, scoring
+│   ├── store/
+│   │   └── analysis-store.ts    # In‑memory analysis/result store (no DB)
+│   ├── utils/
+│   │   ├── pdf-report.ts        # Client-side PDF report generation
+│   │   ├── file-upload.ts       # Upload helpers
+│   │   └── analysis-cache.ts    # localStorage cache helpers
+│   ├── query/hooks/analysis.ts  # React Query hooks
+│   └── hooks/use-dark-mode.ts   # Theme toggle
+└── public/
+    └── uploads/                 # Temporary uploaded files (gitignored)
 ```
 
-## 🎯 Core Features
+## 🎯 Product Behaviour
 
-### ✅ Completed Features
+### Landing page (`/`)
 
-#### **Phase 1: Foundation & Setup** ✅
+- Clean hero with **drag & drop upload**
+- Validates file type/size and shows **upload/progress** states
+- On successful upload and analysis creation:
+  - Immediately redirects to `/analysis/[id]`
+- If there is a cached analysis in this browser:
+  - Shows a **“Recent Analysis”** card linking back to that report
 
-- [x] Database schema and tables
-- [x] User authentication system
-- [x] User profile management
-- [x] Row Level Security (RLS) policies
-- [x] Supabase storage integration
-- [x] Environment configuration
+### Analysis page (`/analysis/[id]`)
 
-#### **Phase 2: Core Infrastructure** ✅
+- Overview tab:
+  - Large circular **overall score** (0–100)
+  - Quick summary: risk level, counts, extracted fields
+  - Full **Key Findings** list (no ellipses/truncation)
+- Scores tab:
+  - Per‑dimension scores (Relevance, Completeness, Risk, Clarity, Accuracy)
+  - Weighted score summary and simple metrics
+- Insights tab:
+  - Insights grouped by **Risks / Strengths / Weaknesses / Opportunities**
+  - Recommendations grouped by priority
+  - Questions & clarifications from the model
+- Details tab:
+  - Extracted fields
+  - Highlights
+  - File metadata
+- **Download report**:
+  - One click PDF report generation on the client via `jsPDF`
 
-- [x] File upload system with drag & drop
-- [x] File validation and preview
-- [x] Upload progress tracking
-- [x] Analysis service with Gemini AI integration
-- [x] Scoring algorithms and risk assessment
-- [x] API routes for analysis operations
-- [x] Background processing system
-- [x] Real-time status updates
+### Storage & lifecycle
 
-#### **Testing & Development** ✅
+- When a file is uploaded:
+  - It is written to `public/uploads/<generated-name>` for the duration of analysis.
+  - `analysis-service` reads/extracts content and calls Gemini.
+  - Once the analysis finishes **or fails**, the file is **deleted automatically**.
+- Analysis metadata + results:
+  - Stored in memory (`analysisStore`) and **auto‑cleaned** a few minutes after completion.
+  - The latest finished analysis is cached in the browser via `localStorage` so the user can revisit it even after a server restart.
 
-- [x] Comprehensive testing page
-- [x] Sample test documents
-- [x] Error handling and validation
-- [x] Progress tracking and status updates
-- [x] PDF extraction testing with pdf-parse-new
+## 🔧 Development Notes
 
-### 🚧 In Progress / Next Steps
+- This branch is intentionally minimal:
+  - No auth
+  - No Supabase
+  - No multi‑tenant history UI
+- Some legacy folders (`app/dashboard`, Supabase helpers) may still exist but are not used by the current product.
 
-#### **Phase 3: State Management**
+To experiment with the analysis logic, see:
 
-- [ ] Analysis store with Jotai
-- [ ] React Query hooks for data fetching
-- [ ] Real-time updates and caching
+- `lib/services/analysis-service.ts`
+- `lib/services/gemini-client.ts`
 
-#### **Phase 4: UI Components**
+To tweak the report layout, see:
 
-- [ ] Analysis results display
-- [ ] Score visualization components
-- [ ] Document viewer integration
-- [ ] History and management interface
-
-#### **Phase 5: Advanced Features**
-
-- [ ] Document viewer with highlights
-- [ ] Export functionality
-- [ ] Advanced analytics dashboard
-- [ ] Sharing and collaboration features
-
-## 🔧 Technical Architecture
-
-### **Database Schema**
-
-- `user_profiles` - User information and preferences
-- `analyses` - Analysis records and metadata
-- `analysis_results` - Detailed analysis results and scores
-
-### **Key Components**
-
-- **File Upload**: Drag & drop with validation
-- **Analysis Engine**: Gemini AI integration with structured prompts
-- **Scoring System**: 5-dimensional scoring (relevance, completeness, risk, clarity, accuracy)
-- **Security**: Row Level Security and proper authentication
-
-### **API Endpoints**
-
-- `POST /api/analysis` - Create new analysis
-- `GET /api/analysis` - Get analysis history
-- `GET /api/analysis/[id]` - Get specific analysis
-- `GET /api/analysis/[id]/status` - Get processing status
-- `POST /api/upload` - File upload endpoint
-
-## 🛠️ Development
-
-### **Testing**
-
-- Visit `/dashboard/test-analysis` for comprehensive testing
-- Download sample documents for testing
-- Real-time progress tracking and error handling
-
-### **File Types Supported**
-
-- PDF Documents (.pdf) - Using pdf-parse-new for reliable text extraction
-- Word Documents (.docx) - Using mammoth for text extraction
-- Excel Spreadsheets (.xlsx) - Basic text extraction
-- Text Files (.txt) - Direct text extraction
-
-### **File Requirements**
-
-- Maximum size: 10MB
-- Processing time: 15-30 seconds
-- Supported languages: English
-
-## 📊 Implementation Progress
-
-**Overall Progress: ~40% Complete**
-
-- ✅ **Foundation**: 100% Complete
-- ✅ **Core Infrastructure**: 100% Complete
-- 🚧 **State Management**: 0% Complete
-- 🚧 **UI Components**: 0% Complete
-- 🚧 **Advanced Features**: 0% Complete
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-1. **Database Connection Issues**
-   - Ensure Supabase credentials are correct
-   - Run the database setup script
-   - Check RLS policies
-
-2. **File Upload Failures**
-   - Verify storage bucket exists
-   - Check file size and type
-   - Ensure authentication is working
-
-3. **Analysis Processing Errors**
-   - Check Gemini AI API key
-   - Verify file content is accessible
-   - Review error logs for details
-
-### Getting Help
-
-- Check the console for detailed error messages
-- Verify all environment variables are set
-- Ensure database setup script was run successfully
+- `app/analysis/[id]/page.tsx` (overview layout)
+- `lib/utils/pdf-report.ts` (PDF export)
 
 ## 📝 License
 
