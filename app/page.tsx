@@ -142,34 +142,7 @@ export default function HomePage() {
       <div className="relative z-10 flex min-h-screen flex-col">
         {/* Top navigation */}
         <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 pt-6 md:px-8">
-          <div className="flex items-center gap-3">
-            <Logo size="lg" />
-            <div className="flex flex-col">
-              <span className="text-sm font-semibold tracking-tight uppercase text-emerald-700 dark:text-emerald-300">
-                RiskRead AI
-              </span>
-              <span className="text-xs text-muted-foreground">
-                Intelligent document risk analysis
-              </span>
-            </div>
-          </div>
-          <nav className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="hidden text-xs font-medium md:inline-flex"
-              onClick={() => router.push("/login")}
-            >
-              Log in
-            </Button>
-            <Button
-              size="sm"
-              className="text-xs font-semibold shadow-sm"
-              onClick={() => router.push("/signup")}
-            >
-              Get started
-            </Button>
-          </nav>
+          <Logo size="lg" />
         </header>
 
         <main className="flex flex-1 flex-col">
@@ -232,7 +205,7 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Upload / analysis card */}
+            {/* Upload / analysis card beneath hero */}
             <div className="flex flex-col gap-4">
               <Card className="border-2 border-emerald-100/80 bg-white/80 shadow-lg shadow-emerald-100/60 backdrop-blur dark:border-emerald-900/70 dark:bg-neutral-950/80 dark:shadow-emerald-950/40">
                 <CardHeader className="pb-3">
