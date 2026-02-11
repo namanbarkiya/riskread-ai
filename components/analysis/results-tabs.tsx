@@ -202,9 +202,11 @@ export const ResultsTabs = ({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {result.extracted_fields.map((field, index) => (
                   <div key={index} className="p-3 border rounded">
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="font-medium text-sm">{field.name}</span>
-                      <span className="text-xs text-muted-foreground">
+                    <div className="flex flex-col gap-1 mb-1 sm:flex-row sm:items-center sm:justify-between">
+                      <span className="font-medium text-sm break-words">
+                        {field.name}
+                      </span>
+                      <span className="text-xs text-muted-foreground shrink-0">
                         {field.confidence}% confidence
                       </span>
                     </div>
@@ -226,7 +228,7 @@ export const ResultsTabs = ({
           {result.raw_ai_response && (
             <div className="p-6 border rounded-lg">
               <h3 className="font-medium mb-4">Raw Analysis Data</h3>
-              <pre className="text-xs bg-muted p-4 rounded overflow-auto max-h-96">
+              <pre className="text-xs bg-muted p-4 rounded overflow-x-auto overflow-y-auto max-h-96 max-w-full">
                 {JSON.stringify(result.raw_ai_response, null, 2)}
               </pre>
             </div>
@@ -260,7 +262,10 @@ export const ResultsTabs = ({
               <ChevronDown className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-full">
+          <DropdownMenuContent
+            align="start"
+            className="w-[var(--radix-popper-anchor-width)]"
+          >
             {tabItems.map((tab) => (
               <DropdownMenuItem
                 key={tab.id}

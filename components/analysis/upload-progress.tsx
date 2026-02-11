@@ -1,8 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { AlertCircle, CheckCircle, Clock, Upload } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 
@@ -25,6 +26,8 @@ export function UploadProgress({
   timeRemaining,
   fileSize,
 }: UploadProgressProps) {
+  const [showStepsMobile, setShowStepsMobile] = useState(false);
+
   const getStatusIcon = () => {
     switch (status) {
       case "validating":
@@ -98,11 +101,11 @@ export function UploadProgress({
       <CardContent className="p-6">
         <div className="space-y-4">
           {/* Header */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex min-w-0 items-center space-x-3">
               {getStatusIcon()}
-              <div>
-                <h3 className="font-medium text-sm truncate max-w-[200px]">
+              <div className="min-w-0">
+                <h3 className="font-medium text-sm truncate max-w-[11rem] sm:max-w-[18rem]">
                   {fileName}
                 </h3>
                 <p className="text-xs text-muted-foreground">
@@ -110,7 +113,7 @@ export function UploadProgress({
                 </p>
               </div>
             </div>
-            <Badge className={getStatusColor()}>
+            <Badge className={getStatusColor() + " w-fit self-start sm:self-auto"}>
               {status.charAt(0).toUpperCase() + status.slice(1)}
             </Badge>
           </div>
@@ -134,7 +137,7 @@ export function UploadProgress({
 
           {/* Upload Details */}
           {(uploadSpeed || timeRemaining || fileSize) && (
-            <div className="grid grid-cols-3 gap-4 text-xs text-muted-foreground">
+            <div className="grid grid-cols-2 gap-3 text-xs text-muted-foreground sm:grid-cols-3">
               {fileSize && (
                 <div className="text-center">
                   <p className="font-medium">File Size</p>
@@ -172,31 +175,54 @@ export function UploadProgress({
           {/* Processing Steps */}
           {(status === "processing" || status === "validating") && (
             <div className="space-y-2">
-              <p className="text-xs font-medium text-muted-foreground">
-                Processing steps:
-              </p>
-              <div className="space-y-1">
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-xs font-medium text-muted-foreground">
+                  Processing steps
+                </p>
+
+                {/* Mobile: keep UI lighter */}
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="h-7 px-2 text-xs sm:hidden"
+                  onClick={() => setShowStepsMobile((v) => !v)}
+                >
+                  {showStepsMobile ? "Hide" : "Show"}
+                </Button>
+              </div>
+
+              {/* Desktop: always show */}
+              <div className="hidden sm:block space-y-1">
                 {status === "validating" && (
                   <>
                     <div className="flex items-center space-x-2 text-xs">
                       <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse" />
-                      <span>Validating PDF content and parsing capability</span>
+                      <span className="break-words">
+                        Validating PDF content and parsing capability
+                      </span>
                     </div>
                     <div className="flex items-center space-x-2 text-xs">
                       <div className="w-2 h-2 bg-gray-300 rounded-full" />
-                      <span>File upload (pending validation)</span>
+                      <span className="break-words">
+                        File upload (pending validation)
+                      </span>
                     </div>
                     <div className="flex items-center space-x-2 text-xs">
                       <div className="w-2 h-2 bg-gray-300 rounded-full" />
-                      <span>Extracting document content</span>
+                      <span className="break-words">
+                        Extracting document content
+                      </span>
                     </div>
                     <div className="flex items-center space-x-2 text-xs">
                       <div className="w-2 h-2 bg-gray-300 rounded-full" />
-                      <span>Analyzing with AI</span>
+                      <span className="break-words">Analyzing with AI</span>
                     </div>
                     <div className="flex items-center space-x-2 text-xs">
                       <div className="w-2 h-2 bg-gray-300 rounded-full" />
-                      <span>Generating risk assessment</span>
+                      <span className="break-words">
+                        Generating risk assessment
+                      </span>
                     </div>
                   </>
                 )}
@@ -204,29 +230,105 @@ export function UploadProgress({
                   <>
                     <div className="flex items-center space-x-2 text-xs">
                       <div className="w-2 h-2 bg-green-500 rounded-full" />
-                      <span>PDF validation completed</span>
+                      <span className="break-words">
+                        PDF validation completed
+                      </span>
                     </div>
                     <div className="flex items-center space-x-2 text-xs">
                       <div className="w-2 h-2 bg-green-500 rounded-full" />
-                      <span>File uploaded successfully</span>
+                      <span className="break-words">
+                        File uploaded successfully
+                      </span>
                     </div>
                     <div className="flex items-center space-x-2 text-xs">
                       <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" />
-                      <span>
+                      <span className="break-words">
                         Extracting document content (using pdf-parse-new)
                       </span>
                     </div>
                     <div className="flex items-center space-x-2 text-xs">
                       <div className="w-2 h-2 bg-gray-300 rounded-full" />
-                      <span>Analyzing with AI</span>
+                      <span className="break-words">Analyzing with AI</span>
                     </div>
                     <div className="flex items-center space-x-2 text-xs">
                       <div className="w-2 h-2 bg-gray-300 rounded-full" />
-                      <span>Generating risk assessment</span>
+                      <span className="break-words">
+                        Generating risk assessment
+                      </span>
                     </div>
                   </>
                 )}
               </div>
+
+              {/* Mobile: show only when toggled */}
+              {showStepsMobile && (
+                <div className="sm:hidden space-y-1">
+                  {status === "validating" && (
+                    <>
+                      <div className="flex items-center space-x-2 text-xs">
+                        <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse" />
+                        <span className="break-words">
+                          Validating PDF content and parsing capability
+                        </span>
+                      </div>
+                      <div className="flex items-center space-x-2 text-xs">
+                        <div className="w-2 h-2 bg-gray-300 rounded-full" />
+                        <span className="break-words">
+                          File upload (pending validation)
+                        </span>
+                      </div>
+                      <div className="flex items-center space-x-2 text-xs">
+                        <div className="w-2 h-2 bg-gray-300 rounded-full" />
+                        <span className="break-words">
+                          Extracting document content
+                        </span>
+                      </div>
+                      <div className="flex items-center space-x-2 text-xs">
+                        <div className="w-2 h-2 bg-gray-300 rounded-full" />
+                        <span className="break-words">Analyzing with AI</span>
+                      </div>
+                      <div className="flex items-center space-x-2 text-xs">
+                        <div className="w-2 h-2 bg-gray-300 rounded-full" />
+                        <span className="break-words">
+                          Generating risk assessment
+                        </span>
+                      </div>
+                    </>
+                  )}
+                  {status === "processing" && (
+                    <>
+                      <div className="flex items-center space-x-2 text-xs">
+                        <div className="w-2 h-2 bg-green-500 rounded-full" />
+                        <span className="break-words">
+                          PDF validation completed
+                        </span>
+                      </div>
+                      <div className="flex items-center space-x-2 text-xs">
+                        <div className="w-2 h-2 bg-green-500 rounded-full" />
+                        <span className="break-words">
+                          File uploaded successfully
+                        </span>
+                      </div>
+                      <div className="flex items-center space-x-2 text-xs">
+                        <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" />
+                        <span className="break-words">
+                          Extracting document content (using pdf-parse-new)
+                        </span>
+                      </div>
+                      <div className="flex items-center space-x-2 text-xs">
+                        <div className="w-2 h-2 bg-gray-300 rounded-full" />
+                        <span className="break-words">Analyzing with AI</span>
+                      </div>
+                      <div className="flex items-center space-x-2 text-xs">
+                        <div className="w-2 h-2 bg-gray-300 rounded-full" />
+                        <span className="break-words">
+                          Generating risk assessment
+                        </span>
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
             </div>
           )}
         </div>

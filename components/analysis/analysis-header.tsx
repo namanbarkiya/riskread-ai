@@ -123,8 +123,8 @@ export const AnalysisHeader = ({
 
       <CardContent className="space-y-4 pt-4">
         {/* Status and Score Row */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div className="flex items-start gap-3">
             {getStatusIcon()}
             <div>
               <p className="font-medium capitalize">{analysis.status}</p>
@@ -139,7 +139,7 @@ export const AnalysisHeader = ({
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center justify-between gap-3 sm:justify-end">
             {analysis.risk_level && (
               <Badge
                 variant="outline"

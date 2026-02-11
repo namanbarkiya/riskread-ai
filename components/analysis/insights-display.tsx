@@ -172,13 +172,16 @@ export const InsightsDisplay = ({
               variant="outline"
               size="sm"
               onClick={() => setShowConfidence(!showConfidence)}
+              className="shrink-0"
             >
               {showConfidence ? (
                 <EyeOff className="h-4 w-4 mr-1" />
               ) : (
                 <Eye className="h-4 w-4 mr-1" />
               )}
-              {showConfidence ? "Hide" : "Show"} Confidence
+              <span className="hidden sm:inline">
+                {showConfidence ? "Hide" : "Show"} Confidence
+              </span>
             </Button>
           </div>
         </CardHeader>
@@ -309,7 +312,7 @@ export const InsightsDisplay = ({
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1">
                     <p className="text-sm mb-2">{question.text}</p>
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
                       <Badge variant="outline" className="text-xs">
                         {question.priority} priority
                       </Badge>

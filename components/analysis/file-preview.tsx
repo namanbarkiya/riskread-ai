@@ -85,7 +85,7 @@ export function FilePreview({
       </CardHeader>
       <CardContent className="space-y-4">
         {/* File Information */}
-        <div className="flex items-start space-x-4">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
           <div className="text-4xl">{getFileIcon(file.name)}</div>
           <div className="flex-1 space-y-2">
             <div>
@@ -94,7 +94,7 @@ export function FilePreview({
                 {fileType.type}
               </Badge>
             </div>
-            <div className="grid grid-cols-2 gap-4 text-sm text-muted-foreground">
+            <div className="grid grid-cols-1 gap-3 text-sm text-muted-foreground sm:grid-cols-2">
               <div className="flex items-center space-x-2">
                 <FileText className="h-4 w-4" />
                 <span>{formatFileSize(file.size)}</span>
@@ -146,18 +146,19 @@ export function FilePreview({
         )}
 
         {/* Action Buttons */}
-        <div className="flex justify-end space-x-2 pt-4">
+        <div className="flex flex-col-reverse gap-2 pt-4 sm:flex-row sm:justify-end">
           <Button
             variant="outline"
             onClick={onRemoveFile}
             disabled={isProcessing}
+            className="w-full sm:w-auto"
           >
             Remove File
           </Button>
           <Button
             onClick={onStartAnalysis}
             disabled={isProcessing}
-            className="min-w-[120px]"
+            className="w-full sm:w-auto sm:min-w-[120px]"
           >
             {isProcessing ? (
               <>

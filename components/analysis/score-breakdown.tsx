@@ -169,7 +169,7 @@ export const ScoreBreakdown = ({ result, className }: ScoreBreakdownProps) => {
   return (
     <Card className={className}>
       <CardHeader>
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <CardTitle className="flex items-center gap-2">
             Score Breakdown
             <TooltipProvider>
@@ -185,13 +185,18 @@ export const ScoreBreakdown = ({ result, className }: ScoreBreakdownProps) => {
               </Tooltip>
             </TooltipProvider>
           </CardTitle>
-          <div className="flex items-center gap-2">
-            <Badge variant="outline">Overall: {overallScore}/100</Badge>
+          <div className="flex flex-wrap items-center gap-2">
+            {/* On mobile we already show overall score in the donut, so hide this pill */}
+            <Badge variant="outline" className="hidden sm:inline-flex">
+              Overall: {overallScore}/100
+            </Badge>
             <Dialog>
               <DialogTrigger asChild>
-                <Button variant="outline" size="sm">
-                  <Info className="h-4 w-4 mr-2" />
-                  How Scores Work
+                <Button variant="outline" size="sm" className="flex items-center gap-1">
+                  <Info className="h-4 w-4" />
+                  <span className="hidden xs:inline sm:inline">
+                    How Scores Work
+                  </span>
                 </Button>
               </DialogTrigger>
               <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
@@ -571,7 +576,7 @@ export const ScoreBreakdown = ({ result, className }: ScoreBreakdownProps) => {
         <div className="space-y-4">
           {metrics.map((metric) => (
             <div key={metric.name} className="space-y-2">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center gap-2">
                   {getScoreIcon(metric.value)}
                   <span className="font-medium">{metric.name}</span>
@@ -585,7 +590,7 @@ export const ScoreBreakdown = ({ result, className }: ScoreBreakdownProps) => {
                   </span>
                   <Badge
                     variant="outline"
-                    className={`${getScoreBorder(metric.value)} ${getScoreColor(metric.value)}`}
+                    className={`hidden sm:inline-flex ${getScoreBorder(metric.value)} ${getScoreColor(metric.value)}`}
                   >
                     {metric.value >= 80
                       ? "Excellent"
@@ -597,7 +602,8 @@ export const ScoreBreakdown = ({ result, className }: ScoreBreakdownProps) => {
                   </Badge>
                 </div>
               </div>
-              <p className="text-sm text-muted-foreground">
+              {/* On mobile, hide long descriptions to reduce noise */}
+              <p className="hidden text-sm text-muted-foreground sm:block">
                 {metric.description}
               </p>
               <Progress

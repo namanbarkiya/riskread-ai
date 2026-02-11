@@ -104,7 +104,7 @@ export function FileUpload({
         <Card
           {...getRootProps()}
           className={cn(
-            "relative border-2 border-dashed p-8 text-center transition-colors cursor-pointer hover:border-primary/50",
+            "relative border-2 border-dashed p-6 sm:p-8 text-center transition-colors cursor-pointer hover:border-primary/50",
             isDragActive && "border-primary bg-primary/5",
             dragActive && "border-primary bg-primary/5"
           )}
@@ -174,11 +174,19 @@ export function FileUpload({
       )}
 
       {selectedFile && !isUploading && (
-        <div className="flex justify-end space-x-2">
-          <Button variant="outline" onClick={handleRemoveFile}>
+        <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+          <Button
+            variant="outline"
+            onClick={handleRemoveFile}
+            className="w-full sm:w-auto"
+          >
             Remove File
           </Button>
-          <Button onClick={onUploadStart} disabled={!selectedFile}>
+          <Button
+            onClick={onUploadStart}
+            disabled={!selectedFile}
+            className="w-full sm:w-auto"
+          >
             Start Analysis
           </Button>
         </div>
