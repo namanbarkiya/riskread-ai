@@ -11,7 +11,6 @@ import {
   Eye,
   FileText,
   RefreshCw,
-  Share2,
   Sparkles,
 } from "lucide-react";
 import { Moon } from "lucide-react";
@@ -203,21 +202,14 @@ export default function AnalysisPage() {
     }
   };
 
-  // Handle share
-  const handleShare = () => {
-    if (!displayAnalysis) return;
-
-    const url = `${window.location.origin}/analysis/${analysisId}`;
-
-    if (navigator.share) {
-      navigator.share({
-        title: `Analysis: ${displayAnalysis.file_name}`,
-        text: `View the risk analysis for ${displayAnalysis.file_name}`,
-        url: url,
-      });
-    } else {
-      navigator.clipboard.writeText(url);
-      toast.success("Analysis link copied to clipboard");
+  const handleDownloadMockAnalysis = () => {
+    try {
+      const mock = createMockAnalysisWithResults(analysisId);
+      generateAnalysisReport(mock.analysis, mock.result);
+      toast.success("Mock analysis PDF downloaded");
+    } catch (error) {
+      console.error("Mock PDF generation error:", error);
+      toast.error("Failed to generate mock analysis PDF");
     }
   };
 
@@ -368,56 +360,23 @@ export default function AnalysisPage() {
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    {!isMockMode ? (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="rounded-full"
-                        onClick={handleViewMockData}
-                      >
-                        <Eye className="h-4 w-4" />
-                        View mock data
-                      </Button>
-                    ) : (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="rounded-full"
-                        onClick={handleViewRealData}
-                        disabled={analysisId === "demo"}
-                      >
-                        <Eye className="h-4 w-4" />
-                        View real data
-                      </Button>
-                    )}
                     <Button
-                      variant="outline"
                       size="sm"
-                      className="rounded-full"
-                      onClick={handleShare}
+                      className="rounded-full px-5"
+                      onClick={handleViewMockData}
                     >
-                      <Share2 className="h-4 w-4" />
-                      Share
+                      <Eye className="h-4 w-4" />
+                      View mock analysis
                     </Button>
                     <Button
                       variant="outline"
                       size="sm"
-                      className="rounded-full"
-                      onClick={handleDownload}
+                      className="rounded-full px-5"
+                      onClick={handleDownloadMockAnalysis}
                     >
                       <Download className="h-4 w-4" />
-                      Export PDF
+                      Download mock analysis
                     </Button>
-                    {displayAnalysis.status === "failed" && (
-                      <Button
-                        size="sm"
-                        className="rounded-full"
-                        onClick={handleReanalyze}
-                      >
-                        <RefreshCw className="h-4 w-4" />
-                        Retry analysis
-                      </Button>
-                    )}
                   </div>
                 </div>
                 <div className="grid gap-3 sm:grid-cols-3">
@@ -545,7 +504,6 @@ export default function AnalysisPage() {
                   result={displayResult}
                   onReanalyze={handleReanalyze}
                   onDownload={handleDownload}
-                  onShare={handleShare}
                 />
               </CardContent>
             </Card>

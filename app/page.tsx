@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
-  ArrowRight,
   CheckCircle2,
   Clock3,
+  Download,
   Eye,
   FileSearch,
   FileText,
@@ -30,6 +30,8 @@ import { useDarkMode } from "@/lib/hooks/use-dark-mode";
 import { useFileUpload } from "@/lib/hooks/use-file-upload";
 import { useCreateAnalysis } from "@/lib/query/hooks/analysis";
 import { cn } from "@/lib/utils";
+import { createMockAnalysisWithResults } from "@/lib/utils/mock-analysis";
+import { generateAnalysisReport } from "@/lib/utils/pdf-report";
 import {
   type CachedAnalysis,
   getLatestCachedAnalysis,
@@ -121,11 +123,15 @@ export default function HomePage() {
     resetUpload();
   };
 
-  const downloadSampleDocument = () => {
-    const link = document.createElement("a");
-    link.href = "/sample-test-document.txt";
-    link.download = "sample-risk-assessment.txt";
-    link.click();
+  const downloadMockAnalysisPdf = () => {
+    try {
+      const mock = createMockAnalysisWithResults("demo");
+      generateAnalysisReport(mock.analysis, mock.result);
+      toast.success("Mock analysis PDF downloaded");
+    } catch (error) {
+      console.error("Mock PDF generation error:", error);
+      toast.error("Failed to generate mock analysis PDF");
+    }
   };
 
   const currentYear = new Date().getFullYear();
@@ -217,32 +223,20 @@ export default function HomePage() {
               </div>
               <div className="flex flex-wrap items-center gap-3">
                 <Button
-                  size="sm"
-                  className="h-9 rounded-full px-4"
-                  onClick={() => {
-                    document.getElementById("start-analysis")?.scrollIntoView({
-                      behavior: "smooth",
-                    });
-                  }}
-                >
-                  Start a free analysis
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
-                <Button
                   variant="outline"
                   size="sm"
-                  className="h-9 rounded-full px-4"
-                  onClick={downloadSampleDocument}
+                  className="h-9 rounded-full px-5"
+                  onClick={downloadMockAnalysisPdf}
                 >
-                  Download sample document
+                  Download mock analysis
+                  <Download className="h-4 w-4" />
                 </Button>
                 <Button
-                  variant="outline"
                   size="sm"
-                  className="h-9 rounded-full px-4"
+                  className="h-9 rounded-full px-5"
                   onClick={() => router.push("/analysis/demo?mock=1")}
                 >
-                  View mock output
+                  View mock analysis
                   <Eye className="h-4 w-4" />
                 </Button>
               </div>
@@ -326,9 +320,9 @@ export default function HomePage() {
                       variant="outline"
                       size="icon"
                       className="h-8 w-8 shrink-0 rounded-full"
-                      onClick={downloadSampleDocument}
+                      onClick={downloadMockAnalysisPdf}
                     >
-                      <Upload className="h-3 w-3" />
+                      <Download className="h-3 w-3" />
                     </Button>
                   </div>
                 </CardContent>
