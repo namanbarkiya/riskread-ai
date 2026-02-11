@@ -112,6 +112,18 @@ const analysisApi = {
 };
 
 // =====================================================
+// POLLING CONFIG
+// =====================================================
+
+const DEFAULT_ANALYSIS_POLL_INTERVAL_MS = 5000;
+
+// Read from NEXT_PUBLIC_ANALYSIS_POLL_INTERVAL_MS if provided, otherwise fallback.
+// This is resolved at build-time by Next.js for client bundles.
+const ANALYSIS_POLL_INTERVAL_MS =
+  Number(process.env.NEXT_PUBLIC_ANALYSIS_POLL_INTERVAL_MS) ||
+  DEFAULT_ANALYSIS_POLL_INTERVAL_MS;
+
+// =====================================================
 // QUERY HOOKS
 // =====================================================
 
@@ -143,7 +155,9 @@ export const useAnalysis = (id: string, enabled: boolean = true) => {
     refetchOnMount: false,
     refetchInterval: (query) => {
       const status = query?.state?.data?.analysis?.status;
-      return status === "processing" || status === "pending" ? 3000 : false;
+      return status === "processing" || status === "pending"
+        ? ANALYSIS_POLL_INTERVAL_MS
+        : false;
     },
   });
 };
@@ -157,9 +171,10 @@ export const useAnalysisStatus = (id: string, enabled: boolean = true) => {
     queryFn: () => analysisApi.getAnalysisStatus(id),
     enabled: enabled && !!id,
     refetchInterval: (query) => {
-      // Poll every 2 seconds if status is processing or pending
       const status = query?.state?.data?.status;
-      return status === "processing" || status === "pending" ? 2000 : false;
+      return status === "processing" || status === "pending"
+        ? ANALYSIS_POLL_INTERVAL_MS
+        : false;
     },
     staleTime: 0, // Always consider stale for status
   });
