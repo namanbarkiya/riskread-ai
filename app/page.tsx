@@ -30,12 +30,12 @@ import { useDarkMode } from "@/lib/hooks/use-dark-mode";
 import { useFileUpload } from "@/lib/hooks/use-file-upload";
 import { useCreateAnalysis } from "@/lib/query/hooks/analysis";
 import { cn } from "@/lib/utils";
-import { createMockAnalysisWithResults } from "@/lib/utils/mock-analysis";
-import { generateAnalysisReport } from "@/lib/utils/pdf-report";
 import {
   type CachedAnalysis,
   getLatestCachedAnalysis,
 } from "@/lib/utils/analysis-cache";
+import { createMockAnalysisWithResults } from "@/lib/utils/mock-analysis";
+import { generateAnalysisReport } from "@/lib/utils/pdf-report";
 
 export default function HomePage() {
   const router = useRouter();
@@ -173,7 +173,7 @@ export default function HomePage() {
               target="_blank"
               rel="noreferrer"
               aria-label="View RiskRead AI on GitHub"
-              className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/60 bg-white/75 text-neutral-700 shadow-sm transition hover:bg-white dark:border-white/10 dark:bg-neutral-900/70 dark:text-neutral-100"
+              className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/60 bg-white/75 text-neutral-700 shadow-sm transition hover:bg-white dark:border-white/10 dark:bg-neutral-900/70 dark:text-neutral-100 mr-12 md:mr-0"
             >
               <Github className="h-4 w-4" />
             </a>
